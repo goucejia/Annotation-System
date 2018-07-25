@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title> 用户系统 </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    {% extends 'user/base.html' %}
+
+    {% block main_body %}
+        {# 上传新文件 #}
+        <div class="container-fluid">
+                <div class="side-body" >
+                    <div class="row " style="background-color: rgb(232, 236, 230);margin: 0px;padding: 0px;">
+                            <div class="row-fluid" >
+
+                                <div class="  col-sm-2 col-md-3  col-lg-3 span3" >
+                                    <div class="panel-body">
+                                        <h3>上传文件</h3>
+                                        {% if error_message %}
+                                            <p><strong>{{ error_message }}</strong></p>
+                                        {% endif %}
+
+                                        <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            {% include 'user/form_template.html' %}
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-2 col-sm-10">
+                                                    <button type="submit" class="btn btn-success"> 确定 </button>
+                                                </div>
+                                            </div>
+{#                                            {{ form.filename }}#}
+{#                                            {{ form.path }}#}
+{#                                            <input type="submit">#}
+                                        </form>
+                                    </div>
+
+
+{#                                    <label for="file"class="btn btn-info">导入文件</label>#}
+{#                                    <input id="file"onchange="loadFile(this.files[0])" type="file"style="display:none">#}
+{##}
+{#                                    <form method="post" action=" " enctype="multipart/form-data">#}
+{#                                        {% csrf_token %}#}
+{#                                        <input type="file" name="upload_file" />#}
+{#                                        <br>#}
+{#                                        <button type="submit" value="upload" class="btn btn-info"> 确认上传 </button>#}
+{#                                    </form>#}
+{#                                    {{ message }}#}
+
+
+
+
+{#                                    <button type="button" class="btn btn-primary">文件类型</button>#}
+{#                                    <button type="button" class="btn btn-success">开始识别</button>#}
+                                </div>
+
+{#                                <div class=" col-sm-7 col-md-7 col-lg-6 span5 ">#}
+{#                                    <button type="button" class="btn btn-default">第一页</button>#}
+{#                                    <button type="button" class="btn btn-default">上一页</button>#}
+{#                                    <button type="button" class="btn btn-default">页码</button>#}
+{#                                    <label class="form-inline"><input type="number" class="form-control"  style="width: 70px" /></label>#}
+{#                                    <button type="button" class="btn btn-default">跳转</button>#}
+{#                                    <button type="button" class="btn btn-default">下一页</button>#}
+{#                                    <button type="button" class="btn btn-default">末页</button>#}
+{#                                </div>#}
+
+{#                                <div class="  col-sm-3 col-md-2 col-lg-3 span4">#}
+{#                                    <button type="button" class="btn btn-default"> <i class="fa fa-file-text-o"></i> </button>#}
+{#                                    <span id="filename" style="vertical-align:middle">未上传文件</span>#}
+{#                                </div>#}
+{#                            </div>#}
+
+                            </div>
+                    <div class="container editor">
+
+                    </div>
+                </div>
+        </div>
+    {% endblock %}
+
+{#    <script type="text/javascript">#}
+{##}
+{#        function FileUpload() {#}
+{#        var form_data = new FormData();#}
+{#        var file_info =document.getElementById('file_upload')[0].files[0];#}
+{#        form_data.append('file',file_info);#}
+{#        $.ajax({#}
+{#            url:'/user/upload/',#}
+{#            type:'POST',#}
+{#            data: form_data,#}
+{#            processData: false, // tell jquery not to process the data#}
+{#            contentType: false, // tell jquery not to set contentType#}
+{#            success: function(callback) {#}
+{#                console.log('ojbk')#}
+{#            }#}
+{#        });#}
+{#      }#}
+{##}
+{#    </script>#}
+
+</body>
+
+</html>

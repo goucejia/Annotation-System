@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> 用户登录 </title>
+</head>
+
+
+{# TODO: Need revision - Login through Logout page #}
+<body>
+    {% extends 'user/base.html' %}
+
+    {% block main_body %}
+        <div class="side-body">
+            <h5>您已经成功登出</h5>
+            <h5> <u><a href="{% url 'user:login' %}"> 点击此处 </a></u> 重新登录 </h5>
+        </div>
+    {% endblock %}
+</body>
+</html>

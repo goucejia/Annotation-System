@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> 用户主页 </title>
+</head>
+<body>
+    {% extends 'user/base.html' %}
+
+    {% block main_body %}
+
+        {# UserProfile Debug Mode #}
+        <div class="side-body">
+            <h3> Main Page. </h3>
+
+            {% if user %}
+            <ul>
+                <li> Username: {{ user.username }}</li>
+                <li> e-mail: {{ user.email }}</li>
+                <li> Cellphone: {{ user.profile.cellphone }}</li>
+                <li> uuid: {{ user.profile.user_uuid }}</li>
+            </ul>
+            {% endif %}
+
+        </div>
+    {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> 用户注册 </title>
+</head>
+<body>
+    {% extends 'user/base.html' %}
+
+    {% block main_body %}
+        <div class="side-body">
+            <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h3>注册账号</h3>
+                            {% if error_message %}
+                                <p><strong>{{ error_message }}</strong></p>
+                            {% endif %}
+
+                            <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% include 'user/form_template.html' %}
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="submit" class="btn btn-success"> 确定 </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="panel-footer">
+                            已有账号？点击 <a href="{% url 'user:login' %}">这里</a> 登录.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        </div>
+    {% endblock %}
+
+</body>
+</html>
