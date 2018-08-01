@@ -117,7 +117,7 @@ def file_management(request):
 
 
 # @login_required(login_url='/user/login/')
-# def delete_file(request, file_id):
+# def delete_file(request, file_id):m
 #     user = request.user
 #     file = get_object_or_404(File, file_id)
 #     file.delete()
