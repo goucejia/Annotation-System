@@ -5,7 +5,7 @@
     <title> 用户注册 </title>
 </head>
 <body>
-    {% extends 'user/base.html' %}
+    {% extends 'user/user_base.html' %}
 
     {% block main_body %}
         <div class="side-body">
@@ -22,7 +22,7 @@
 
                             <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
-                                {% include 'user/form_template.html' %}
+                                {% include 'user/../form_template.html' %}
                                 <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-10">
                                         <button type="submit" class="btn btn-success"> 确定 </button>

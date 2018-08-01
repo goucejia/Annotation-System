@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> 文件管理 </title>
+</head>
+
+<body>
+    <script type="text/javascript">
+        var current_file_guid = '';
+        {#var current_filename = '';#}
+
+        function select_file(element){
+            {#alert("clicked");#}
+            current_file_guid = element.id;
+            console.log(current_file_guid);
+        }
+
+        function delete_file() {
+            var post_data = {
+                'action': 'delete_file',
+                'file_guid': current_file_guid,
+            };
+            console.log(post_data);
+
+            $.ajax({
+                url:'/user/delete_file/',
+                type:'POST',
+                data:post_data,
+                // processData: false,  // tell jquery not to process the data
+                // contentType: false, // tell jquery not to set contentType
+                success:function(res){
+                    if(res['message'] !='success'){
+                        alert(res['message']);
+                    }
+                    location.reload();
+                },
+                error:function(err){
+                   alert('网络连接失败,稍后重试',err);
+                }
+            })
+        }
+    </script>
+
+    {% extends 'file/file_base.html' %}
+    {% block main_body %}
+        <div class="side-body">
+
+            <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                 <li role="presentation" class="active"><a href="{% url 'user:file_management' %}">文件列表</a></li>
+                 <li role="presentation"><a href="{% url 'user:file_upload' %}">上传文件</a ></li>
+            </ul>
+
+            {#   user files   #}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col"> 文件名 </th>
+                    <th scope="col"> 上传者 </th>
+                    <th scope="col"> UUID </th>
+{#                    <th scope="col"> 最后修改时间 </th>#}
+                </tr>
+                </thead>
+
+                {% for file in files %}
+                    <tr id={{  file.gu_id }} oncontextmenu="select_file(this)">
+                        <td>{{ file.filename }}</td>
+                        <td>{{ file.owner.username }}</td>
+                        <td>{{ file.gu_id }}</td>
+
+                        {# 删除键 #}
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#delete_file_modal">
+                                删除文件
+                            </button>
+                        </td>
+
+
+{#                        <td>#}
+{#                            <button type="button" onclick="select_file({{ file.gu_id }})">#}
+{#                                click#}
+{#                            </button>#}
+{#                        </td>#}
+{#                        <td> <form action="{% url 'user:delete_file' %}" method="post" style="display: inline;">#}
+{#                            {% csrf_token %}#}
+{#                            <input type="hidden" name="file_id" value="{{ file_id }}">#}
+{#                            <button type="submit" class="btn btn-danger btn-xs">#}
+{#                                <span class="glyphicon glyphicon-remove"></span>&nbsp; 删除#}
+{#                            </button>#}
+{#                        </form>#}
+{#                        </td>#}
+
+                    </tr>
+                {% endfor %}
+            </table>
+
+            {#   "shared with me"   #}
+{#            <table class="table table-striped">#}
+{#                <thead>#}
+{#                <tr>#}
+{#                    <th scope="col"> 文件名 </th>#}
+{#                    <th scope="col"> 上传者 </th>#}
+{#                    <th scope="col"> UUID </th>#}
+{#                </tr>#}
+{#                </thead>#}
+{##}
+{#                {% for file in shared_files %}#}
+{#                    <tr>#}
+{#                        <td>{{ file.filename }}</td>#}
+{#                        <td>{{ file.owner.username }}</td>#}
+{#                        <td>{{ file.gu_id }}</td>#}
+{#                    </tr>#}
+{#                {% endfor %}#}
+{#            </table>#}
+
+        <div id="context-menu">
+            <ul class="dropdown-menu" role="menu">
+                <li><a tabindex="-1" href="#delete_file_modal"> 删除文件 </a></li>
+                <li><a tabindex="-1" href="#"> 分享给用户 </a></li>
+                <li><a tabindex="-1" href="#"> 分享到分组 </a></li>
+            </ul>
+        </div>
+
+
+            {# delete file modal #}
+            <div class="modal fade" id="delete_file_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLable"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" data-dismiss="modal" class="close" aria-hidden="true">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h5 class="modal-title" id="myModalLable"></h5>
+                        </div>
+                        <div class="modal-body" id="delete_file_modal_body">
+                            确认删除文件?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="delete_file()">确认删除</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    {% endblock %}
+
+
+</body>
+
+
+</html>

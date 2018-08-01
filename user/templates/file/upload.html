@@ -8,12 +8,17 @@
 </head>
 
 <body>
-    {% extends 'user/base.html' %}
+    {% extends 'file/file_base.html' %}
 
     {% block main_body %}
         {# 上传新文件 #}
         <div class="container-fluid">
                 <div class="side-body" >
+                    <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                         <li role="presentation"><a href="{% url 'user:file_management' %}">文件列表</a></li>
+                         <li role="presentation" class="active"><a href="{% url 'user:file_upload' %}">上传文件</a ></li>
+                    </ul>
+
                     <div class="row " style="background-color: rgb(232, 236, 230);margin: 0px;padding: 0px;">
                             <div class="row-fluid" >
 
@@ -26,7 +31,7 @@
 
                                         <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
                                             {% csrf_token %}
-                                            {% include 'user/form_template.html' %}
+                                            {% include 'user/../form_template.html' %}
                                             <div class="form-group">
                                                 <div class="col-sm-offset-2 col-sm-10">
                                                     <button type="submit" class="btn btn-success"> 确定 </button>

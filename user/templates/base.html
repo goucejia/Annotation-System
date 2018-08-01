@@ -11,18 +11,35 @@
     <!-- Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
+    <link href='stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css' type="text/css">
     <!-- CSS Libs -->
-    <link rel="stylesheet" type="text/css" href="../../static/lib/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="../../static/lib/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="../../static/lib/css/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="../../static/lib/css/bootstrap-switch.min.css">
-    <link rel="stylesheet" type="text/css" href="../../static/lib/css/checkbox3.min.css">
-    <link rel="stylesheet" type="text/css" href="../../static/lib/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" type="text/css" href="../../static/lib/css/dataTables.bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../../static/lib/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/css/animate.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/css/bootstrap-switch.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/css/checkbox3.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/css/jquery.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/css/dataTables.bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/css/select2.min.css' %}">
     <!-- CSS App -->
-    <link rel="stylesheet" type="text/css" href="../../static/css/style.css">
-    <link rel="stylesheet" type="text/css" href="../../static/css/themes/flat-green.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/themes/flat-green.css' %}">
+
+
+{#    <!-- CSS Libs -->#}
+{#    <link rel="stylesheet" type="text/css" href="../static/lib/css/bootstrap.min.css">#}
+{#    <link rel="stylesheet" type="text/css" href="../static/lib/css/font-awesome.min.css">#}
+{#    <link rel="stylesheet" type="text/css" href="../static/lib/css/animate.min.css">#}
+{#    <link rel="stylesheet" type="text/css" href="../static/lib/css/bootstrap-switch.min.css">#}
+{#    <link rel="stylesheet" type="text/css" href="../static/lib/css/checkbox3.min.css">#}
+{#    <link rel="stylesheet" type="text/css" href="../static/lib/css/jquery.dataTables.min.css">#}
+{#    <link rel="stylesheet" type="text/css" href="../static/lib/css/dataTables.bootstrap.css">#}
+{#    <link rel="stylesheet" type="text/css" href="../static/lib/css/select2.min.css">#}
+{#    <!-- CSS App -->#}
+{#    <link rel="stylesheet" type="text/css" href="../static/css/style.css">#}
+{#    <link rel="stylesheet" type="text/css" href="../static/css/themes/flat-green.css">#}
+
+
 </head>
 
 
@@ -114,49 +131,53 @@
                     </ul>
                 </div>
             </nav>
-            <div class="side-menu sidebar-inverse">
-                <nav class="navbar navbar-default" role="navigation">
-                    <div class="side-menu-container">
-                        <div class="navbar-header">
-                            <a class="navbar-brand" href="#">
-                                <div class="icon fa fa-newspaper-o"></div>
-                                <div class="title"> 用户中心 </div>
-                            </a>
-                            <button type="button" class="navbar-expand-toggle pull-right visible-xs">
-                                <i class="fa fa-times icon"></i>
-                            </button>
-                        </div>
-                        <ul class="nav navbar-nav" >
-                            <li >
-                                <a>
-                                    <span class="icon fa fa-folder-open"></span><span class="title">添加对象</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a>
-                                    <span class="icon fa fa-trash"></span><span class="title">删除对象</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a>
-                                    <span class="icon fa fa-cogs"></span><span class="title">类别选择</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a>
-                                    <span class="icon fa fa-save"></span><span class="title">保存修改</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a>
-                                    <span class="icon fa fa-external-link"></span><span class="title">导出结果</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.navbar-collapse -->
-                </nav>
-            </div>
+
+
+           {% block side_bar %}
+           {% endblock %}
+{#            <div class="side-menu sidebar-inverse">#}
+{#                <nav class="navbar navbar-default" role="navigation">#}
+{#                    <div class="side-menu-container">#}
+{#                        <div class="navbar-header">#}
+{#                            <a class="navbar-brand" href="#">#}
+{#                                <div class="icon fa fa-newspaper-o"></div>#}
+{#                                <div class="title"> 在线标注平台 </div>#}
+{#                            </a>#}
+{#                            <button type="button" class="navbar-expand-toggle pull-right visible-xs">#}
+{#                                <i class="fa fa-times icon"></i>#}
+{#                            </button>#}
+{#                        </div>#}
+{#                        <ul class="nav navbar-nav" >#}
+{#                            <li >#}
+{#                                <a>#}
+{#                                    <span class="icon fa fa-folder-open"></span><span class="title">添加对象</span>#}
+{#                                </a>#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                <a>#}
+{#                                    <span class="icon fa fa-trash"></span><span class="title">删除对象</span>#}
+{#                                </a>#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                <a>#}
+{#                                    <span class="icon fa fa-cogs"></span><span class="title">类别选择</span>#}
+{#                                </a>#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                <a>#}
+{#                                    <span class="icon fa fa-save"></span><span class="title">保存修改</span>#}
+{#                                </a>#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                <a>#}
+{#                                    <span class="icon fa fa-external-link"></span><span class="title">导出结果</span>#}
+{#                                </a>#}
+{#                            </li>#}
+{#                        </ul>#}
+{#                    </div>#}
+{#                    <!-- /.navbar-collapse -->#}
+{#                </nav>#}
+{#            </div>#}
 
             <!-- Main Content -->
             {% block main_body %}
@@ -169,20 +190,23 @@
             </div>
         </footer>
         <div>
+
             <!-- Javascript Libs -->
-            <script type="text/javascript" src="../../static/lib/js/jquery.min.js"></script>
-            <script type="text/javascript" src="../../static/lib/js/bootstrap.min.js"></script>
-            <script type="text/javascript" src="../../static/lib/js/Chart.min.js"></script>
-            <script type="text/javascript" src="../../static/lib/js/bootstrap-switch.min.js"></script>
-            <script type="text/javascript" src="../../static/lib/js/jquery.matchHeight-min.js"></script>
-            <script type="text/javascript" src="../../static/lib/js/jquery.dataTables.min.js"></script>
-            <script type="text/javascript" src="../../static/lib/js/dataTables.bootstrap.min.js"></script>
-            <script type="text/javascript" src="../../static/lib/js/select2.full.min.js"></script>
-            <script type="text/javascript" src="../../static/lib/js/ace/ace.js"></script>
-            <script type="text/javascript" src="../../static/lib/js/ace/mode-html.js"></script>
-            <script type="text/javascript" src="../../static/lib/js/ace/theme-github.js"></script>
+            <script type="text/javascript" src="{% static 'lib/js/jquery.min.js' %}"></script>
+            <script type="text/javascript" src="{% static 'lib/js/bootstrap.min.js' %}"></script>
+            <script type="text/javascript" src="{% static 'lib/js/Chart.min.js' %}"></script>
+            <script type="text/javascript" src="{% static 'lib/js/bootstrap-switch.min.js' %}"></script>
+            <script type="text/javascript" src="{% static 'lib/js/jquery.matchHeight-min.js' %}"></script>
+            <script type="text/javascript" src="{% static 'lib/js/jquery.dataTables.min.js' %}"></script>
+            <script type="text/javascript" src="{% static 'lib/js/ace/ace.js' %}"></script>
+            <script type="text/javascript" src="{% static 'lib/js/ace/mode-html.js' %}"></script>
+            <script type="text/javascript" src="{% static 'lib/js/ace/theme-github.js' %}"></script>
             <!-- Javascript -->
-            <script type="text/javascript" src="../../static/js/app.js"></script>
-            <script type="text/javascript" src="../../static/js/index.js"></script>
-</body>
+            <script type="text/javascript" src="{% static '/js/app.js' %}"></script>
+            <script type="text/javascript" src="{% static '/js/index.js' %}"></script>
+
+        </div>
+    </div>
+
+    </body>
 </html>

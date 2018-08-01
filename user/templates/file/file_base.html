@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>file_base</title>
+</head>
+<body>
+    {% extends 'file/../base.html' %}
+
+    {% block side_bar %}
+        <div class="side-menu sidebar-inverse">
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="side-menu-container">
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="#">
+                                <div class="icon fa fa-briefcase"></div>
+                                <div class="title"> 文件管理 </div>
+                            </a>
+                            <button type="button" class="navbar-expand-toggle pull-right visible-xs">
+                                <i class="fa fa-times icon"></i>
+                            </button>
+                        </div>
+                        <ul class="nav navbar-nav" >
+                            <li>
+                                <a href="{% url 'user:file_management' %}">
+                                    <span class="icon fa fa-folder-open"></span><span class="title">我的文件</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <span class="icon fa fa-share-alt"></span><span class="title">与我分享</span>
+                                </a>
+                            </li>
+{#                            <li >#}
+{#                                <a>#}
+{#                                    <span class="icon fa fa-share-alt-square"></span><span class="title">群组文件</span>#}
+{#                                </a>#}
+{#                            </li>#}
+                            <li>
+                                <a href="{% url 'user:homepage' %}">
+                                    <span class="icon fa fa-newspaper-o"></span><span class="title">用户中心</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+                </nav>
+        </div>
+    {% endblock %}
+
+</body>
+</html>
