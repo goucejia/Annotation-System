@@ -2,11 +2,6 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import File
 
-# class UserForm(forms.ModelForm):
-#     class Meta:
-#         model = User
-#         fields = ('username', 'password', 'email')
-
 
 class UserProfileForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -18,8 +13,17 @@ class UserProfileForm(forms.ModelForm):
         fields = ['username', 'cellphone', 'email', 'password', ]
 
 
+class PasswordResetForm(forms.Form):
+    old_password = forms.CharField(widget=forms.PasswordInput)
+    new_password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+
+    # class Meta:
+    #     # model = User
+    #     fields = ['old password', 'new password', 'confirm password', ]
+
+
 class FileUploadForm(forms.ModelForm):
     class Meta:
         model = File
-        fields = ['path', ]  # TODO: 只上传文件，文件名自动识别
-
+        fields = ['path', ]

@@ -13,7 +13,13 @@ urlpatterns = [
 
     url(r'^logout/$', views.logout, name='logout'),
 
+    url(r'^password_reset_by_user$', views.password_reset_by_user, name='password_reset_by_user'),
+
+    url(r'^password_reset_by_email', views.password_reset_by_email, name='password_reset_by_email'),
+
     url(r'^user_homepage/$', views.homepage, name='homepage'),
+
+
 
     url(r'^file_upload/$', views.file_upload, name='file_upload'),
 
