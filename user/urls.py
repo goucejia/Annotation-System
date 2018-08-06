@@ -25,5 +25,17 @@ urlpatterns = [
 
     url(r'^file_management/$', views.file_management, name='file_management'),
 
+    url(r'^shared_file_view/$', views.share_file_view, name='share_files_view'),
+
+    url(r'^group_files_view/$', views.group_file_view, name='group_files_view'),
+
     url(r'^delete_file/$', views.delete_file, name='delete_file'),
+
+    url(r'^share_file/$', views.share_file, name='share_file'),
+
+    url(r'^edit_file/$', views.edit_file, name='edit_file'),
+
+
+
+
 ]

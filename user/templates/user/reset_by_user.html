@@ -20,32 +20,34 @@
                                 <p><strong>{{ error_message }}</strong></p>
                             {% endif %}
 
-                            <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="old"> 请输入原密码： </label>
-                                    {{ form.old_password }}
-                                </div>
+                            <div class="container">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+                                    <button type="submit">Submit</button>
+                                </form>
+                                <br>
+                            </div>
 
-                                <div class="form-group">
-                                    <label for="new"> 请输入新密码： </label>
-                                    {{ form.new_password }}
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="confirm"> 请再次输入新密码进行确认： </label>
-                                    {{ form.confirm_password }}
-                                </div>
-
-                                <input type="submit" class="btn btn-default" value="确认">
-
-{#                                {% include 'user/../form_template.html' %}#}
+{#                            <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">#}
+{#                                {% csrf_token %}#}
 {#                                <div class="form-group">#}
-{#                                    <div class="col-sm-offset-2 col-sm-10">#}
-{#                                        <button type="submit" class="btn btn-success"> 确定 </button>#}
-{#                                    </div>#}
+{#                                    <label for="old"> 请输入原密码： </label>#}
+{#                                    {{ form.old_password }}#}
 {#                                </div>#}
-                            </form>
+{##}
+{#                                <div class="form-group">#}
+{#                                    <label for="new"> 请输入新密码： </label>#}
+{#                                    {{ form.new_password }}#}
+{#                                </div>#}
+{##}
+{#                                <div class="form-group">#}
+{#                                    <label for="confirm"> 请再次输入新密码进行确认： </label>#}
+{#                                    {{ form.confirm_password }}#}
+{#                                </div>#}
+{##}
+{#                                <input type="submit" class="btn btn-default" value="确认">#}
+{#                            </form>#}
                         </div>
                     </div>
                 </div>

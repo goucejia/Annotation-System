@@ -1,5 +1,5 @@
-from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
-from django.template import loader
+from django.shortcuts import render, HttpResponse, redirect
+from django.urls import reverse
 from .models import *
 
 # User Authentications
@@ -7,7 +7,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from .forms import UserProfileForm, FileUploadForm, PasswordResetForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from .forms import UserProfileForm, FileUploadForm
 
 # File Upload
 from django.http import JsonResponse
@@ -65,28 +67,49 @@ def password_reset_by_email(request):  # TODO: complete function - password forg
     return render(request, 'check_success.html')
 
 
-@login_required(login_url='/user/login/')
+# @login_required(login_url='/user/login/')
+# def password_reset_by_user(request):
+#     form = PasswordResetForm(request.POST or None)
+#     if form.is_valid():
+#         user = request.user
+#         old_password = form.cleaned_data['old_password']
+#         new_pass1 = form.cleaned_data['new_password']
+#         new_pass2 = form.cleaned_data['confirm_password']
+#         if new_pass1 == new_pass2:
+#             checkuser = authenticate(username=user.username, password=old_password)
+#             if checkuser is not None:
+#                 if checkuser.is_active:
+#                     user.set_password(new_pass1)
+#                     user.save()
+#                     return render(request, 'check_success.html')
+#             return render(request, 'check_success.html')
+#         else:  # new password and confirmation does not match
+#             return render(request, 'user/reset_by_user.html', {'form': form, 'error_message': "密码不一致"})
+#     return render(request, 'user/reset_by_user.html', {'form': form, })
+
+@login_required(login_url='/user/login/')  # TODO: fix function
 def password_reset_by_user(request):
-    form = PasswordResetForm(request.POST or None)
+    # if request.method == 'POST':
+    #     form = PasswordChangeForm(user=request.user, data=request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #         update_session_auth_hash(request, form.user)
+    #         # return redirect('http://www.baidu.com/')
+    #         return redirect(reverse('user:homepage'))
+    #     # else:
+    #     #     # return redirect(reverse('user:password_reset_by_user'))
+    # else:
+    #     form = PasswordChangeForm(user=request.user)
+    #
+    # context = {'form': form, }
+    # return render(request, 'user/reset_by_user.html', context)
+
+    form = PasswordChangeForm(user=request.user, data=request.POST or None)
     if form.is_valid():
-        user = request.user
-        old_password = form.cleaned_data['old_password']
-        new_pass1 = form.cleaned_data['new_password']
-        new_pass2 = form.cleaned_data['confirm_password']
-        if new_pass1 == new_pass2:   # TODO: check if user entered the correct old password
-            checkuser = authenticate(username=user.username, password=old_password)
-            if checkuser is not None:
-                if checkuser.is_active:
-                    user.set_password(new_pass1)
-                    user.save()
-                    return render(request, 'check_success.html')
-            return render(request, 'check_success.html')
-        else:  # new password and confirmation does not match
-            return render(request, 'user/reset_by_user.html', {'form': form, 'error_message': "密码不一致"})
-    return render(request, 'user/reset_by_user.html', {'form': form, })
-
-
-    # return render(request, 'check_success.html')
+        form.save()
+        update_session_auth_hash(request, form.user)
+        return redirect(reverse('user:homepage'))
+    return render(request, 'user/reset_by_user.html', {'form': form})
 
 
 @login_required(login_url='/user/login/')
@@ -171,13 +194,31 @@ def file_upload(request):
 def file_management(request):
     user = request.user
     files = File.objects.filter(owner=user)
-    shared_files = FileShare.objects.filter(sharer=user)
     context = {
         'user': user,
         'files': files,
-        'shared_files': shared_files,
     }
     return render(request, 'file/file_management.html', context)
+
+
+@login_required(login_url='/user/login/')
+def share_file_view(request):   # TODO: complete function
+    user = request.user
+    shared_files = FileShare.objects.filter(sharer=user)
+    if shared_files.exists():
+        msg_code = 0
+    else:
+        msg_code = 1
+    context = {
+        'user': user,
+        'shared_files': shared_files,
+        'msg': msg_code,
+    }
+    return render(request, 'file/shared_with_me.html', context)
+
+@login_required(login_url='/user/login/')
+def group_file_view(request):   # TODO: complete function
+    return render(request, 'check_success.html')
 
 
 @ensure_csrf_cookie
@@ -194,16 +235,42 @@ def delete_file(request):
                 c['message'] = '非文件上传者，无法删除'
                 return JsonResponse(c)
             else:
-                # delete from File table
+                # delete from File table, other table auto-delete by CASCADE
                 File.objects.filter(gu_id=target_file_id).delete()
                 c['message'] = '删除成功'
     return JsonResponse(c)
 
 
+@ensure_csrf_cookie
+@csrf_exempt
+@login_required(login_url='/user/login/')
+def share_file(request):
+    c = {}
+    correct_co_editors = []
+    wrong_input = []
 
+    if request.method == 'POST':
+        owner = request.user
+        file_guid = request.POST.get('file_guid')
+        share_input = request.POST.get('co_editors').split('\n')
 
+        shared_file = File.objects.filter(gu_id=file_guid)[0]
+        for p in share_input:
+            if User.objects.filter(Q(username=p) | Q(email=p)).exists():  # input has a match
+                matched_editor = User.objects.filter(Q(username=p) | Q(email=p))[0]
+                correct_co_editors.append(p)
+                share = FileShare(owner=owner, sharer=matched_editor, shared_file=shared_file)
+                share.save()
+            else:
+                wrong_input.append(p)
 
+    c['correct_co_editors'] = correct_co_editors
+    c['wrong_input'] = wrong_input
+    return JsonResponse(c)
 
-
-
+@ensure_csrf_cookie
+@csrf_exempt
+@login_required(login_url='/user/login/')
+def edit_file(request):
+    return render(request, 'check_success.html')
 

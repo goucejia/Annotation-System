@@ -13,17 +13,13 @@ class UserProfileForm(forms.ModelForm):
         fields = ['username', 'cellphone', 'email', 'password', ]
 
 
-class PasswordResetForm(forms.Form):
-    old_password = forms.CharField(widget=forms.PasswordInput)
-    new_password = forms.CharField(widget=forms.PasswordInput)
-    confirm_password = forms.CharField(widget=forms.PasswordInput)
-
-    # class Meta:
-    #     # model = User
-    #     fields = ['old password', 'new password', 'confirm password', ]
-
-
 class FileUploadForm(forms.ModelForm):
     class Meta:
         model = File
         fields = ['path', ]
+
+
+# class PasswordResetForm(forms.Form):
+#     old_password = forms.CharField(widget=forms.PasswordInput)
+#     new_password = forms.CharField(widget=forms.PasswordInput)
+#     confirm_password = forms.CharField(widget=forms.PasswordInput)
