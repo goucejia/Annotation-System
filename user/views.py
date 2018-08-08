@@ -66,6 +66,16 @@ def login(request):
 def password_reset_by_email(request):  # TODO: complete function - password forgot reset
     return render(request, 'check_success.html')
 
+@login_required(login_url='/user/login/')
+def logout(request):
+    auth_logout(request)
+    return render(request, 'user/logout.html')  # TODO: redirect logout to login-page
+    # form = UserProfileForm(request.POST or None)
+    # context = {
+    #     "form": form,
+    # }
+    # return render(request, 'user/logout.html', context)
+
 
 # @login_required(login_url='/user/login/')
 # def password_reset_by_user(request):
@@ -112,24 +122,75 @@ def password_reset_by_user(request):
     return render(request, 'user/reset_by_user.html', {'form': form})
 
 
-@login_required(login_url='/user/login/')
-def logout(request):
-    auth_logout(request)
-    return render(request, 'user/logout.html')  # TODO: redirect logout to login-page
-    # form = UserProfileForm(request.POST or None)
-    # context = {
-    #     "form": form,
-    # }
-    # return render(request, 'user/logout.html', context)
+#    ------------------------------------------------------------------------------------------------------------
 
+
+#
+# 用户群组
+#
+@ensure_csrf_cookie
+@csrf_exempt
+@login_required(login_url='/user/login/')
+def create_group(request):
+    c = {}
+    correct_members = []
+    wrong_input = []
+
+    if request.method == 'POST':
+        owner = request.user
+        id_input = request.POST.get('members').split('\n')
+
+        group = Group(owner=owner,)
+        group.save()
+
+        for p in id_input:
+            if User.objects.filter(Q(username=p) | Q(email=p)).exists():
+                matched_user = User.objects.filter(Q(username=p) | Q(email=p))[0]
+                member_record = GroupMember(share_group=group, shared_user=matched_user)
+                member_record.save()
+                correct_members.append(p)
+            else:
+                wrong_input.append(p)
+
+        # if no valid group member is found, delete the generated group
+        if len(correct_members) == 0:
+            group.delete()
+
+        member_record = GroupMember(share_group=group, shared_user=owner);
+        member_record.save()
+
+    c['correct_members'] = correct_members
+    c['wrong_input'] = wrong_input
+    return JsonResponse(c)
+
+
+@login_required(login_url='/user/login/')
+def group_management(request):
+    user = request.user
+    groups = Group.objects.filter(owner=user)
+    # related_group = Group.objects.select_related().filter(owner=user)
+
+    print(user)
+    print(groups)
+
+    # for group in groups:   # find the members in each group and store username in array (as string?)
+    #     members = GroupMember.objects.filter(share_group=group)
+
+    context = {
+        'groups': groups,
+        'user': user,
+    }
+    return render(request, 'user/group_management.html', context)
+
+#  -----------------------------------------------------------------------------------------------------------------
 
 #
 # 文件管理系统
 #
 @login_required(login_url='/user/login/')
 def index(request):
-    return redirect('/user/file_upload')
-    # return render(request, 'user/upload.html')
+    # return redirect('/user/file_upload')
+    return redirect(reverse('user:file_upload'))
 
 
 @login_required(login_url='/user/login/')
@@ -194,15 +255,20 @@ def file_upload(request):
 def file_management(request):
     user = request.user
     files = File.objects.filter(owner=user)
+    if files.exists():
+        msg_code = 0
+    else:
+        msg_code = 1
     context = {
         'user': user,
         'files': files,
+        'msg': msg_code,
     }
     return render(request, 'file/file_management.html', context)
 
 
 @login_required(login_url='/user/login/')
-def share_file_view(request):   # TODO: complete function
+def share_file_view(request):
     user = request.user
     shared_files = FileShare.objects.filter(sharer=user)
     if shared_files.exists():
@@ -271,6 +337,6 @@ def share_file(request):
 @ensure_csrf_cookie
 @csrf_exempt
 @login_required(login_url='/user/login/')
-def edit_file(request):
+def edit_file(request):  # TODO: complete function
     return render(request, 'check_success.html')
 

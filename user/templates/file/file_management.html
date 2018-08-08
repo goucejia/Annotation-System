@@ -77,58 +77,62 @@
                  <li role="presentation"><a href="{% url 'user:file_upload' %}">上传文件</a ></li>
             </ul>
 
-            {#   user files   #}
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col"> 文件名 </th>
-                    <th scope="col"> 上传者 </th>
-                    <th scope="col"> UUID </th>
-{#                    <th scope="col"> 最后修改时间 </th>#}
-                </tr>
-                </thead>
+            {% if msg == 1 %}
+                <h5> 您还没有上传文件 </h5>
+            {% endif %}
 
-                {% for file in files %}
-                    <tr id={{  file.gu_id }} oncontextmenu="select_file(this)">
-                        <td>{{ file.filename }}</td>
-                        <td>{{ file.owner.username }}</td>
-                        <td>{{ file.gu_id }}</td>
-
-                        {# 删除键 #}
-                        <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#delete_file_modal">
-                                删除文件
-                            </button>
-                        </td>
-
-                        {# 分享键 #}
-                        <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#share_file_modal">
-                                分享
-                            </button>
-                        </td>
-
-
-{#                        <td>#}
-{#                            <button type="button" onclick="select_file({{ file.gu_id }})">#}
-{#                                click#}
-{#                            </button>#}
-{#                        </td>#}
-{#                        <td> <form action="{% url 'user:delete_file' %}" method="post" style="display: inline;">#}
-{#                            {% csrf_token %}#}
-{#                            <input type="hidden" name="file_id" value="{{ file_id }}">#}
-{#                            <button type="submit" class="btn btn-danger btn-xs">#}
-{#                                <span class="glyphicon glyphicon-remove"></span>&nbsp; 删除#}
-{#                            </button>#}
-{#                        </form>#}
-{#                        </td>#}
-
+            {% if msg == 0 %}
+                {#   user files   #}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"> 文件名 </th>
+                        <th scope="col"> 上传者 </th>
+                        <th scope="col"> UUID </th>
+{#                        <th scope="col"> 最后修改时间 </th>#}
                     </tr>
-                {% endfor %}
-            </table>
+                    </thead>
 
-        <br>
-        <br>
+                    {% for file in files %}
+                        <tr id={{  file.gu_id }} oncontextmenu="select_file(this)">
+                            <td>{{ file.filename }}</td>
+                            <td>{{ file.owner.username }}</td>
+                            <td>{{ file.gu_id }}</td>
+
+                            {# 删除键 #}
+                            <td>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#delete_file_modal">
+                                    删除文件
+                                </button>
+                            </td>
+
+                            {# 分享键 #}
+                            <td>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#share_file_modal">
+                                    分享
+                                </button>
+                            </td>
+
+
+{#                            <td>#}
+{#                                <button type="button" onclick="select_file({{ file.gu_id }})">#}
+{#                                    click#}
+{#                                </button>#}
+{#                            </td>#}
+{#                            <td> <form action="{% url 'user:delete_file' %}" method="post" style="display: inline;">#}
+{#                                {% csrf_token %}#}
+{#                                <input type="hidden" name="file_id" value="{{ file_id }}">#}
+{#                                <button type="submit" class="btn btn-danger btn-xs">#}
+{#                                    <span class="glyphicon glyphicon-remove"></span>&nbsp; 删除#}
+{#                                </button>#}
+{#                            </form>#}
+{#                            </td>#}
+
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+
         <br>
 
             <div id="context-menu">

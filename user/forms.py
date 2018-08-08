@@ -18,7 +18,6 @@ class FileUploadForm(forms.ModelForm):
         model = File
         fields = ['path', ]
 
-
 # class PasswordResetForm(forms.Form):
 #     old_password = forms.CharField(widget=forms.PasswordInput)
 #     new_password = forms.CharField(widget=forms.PasswordInput)

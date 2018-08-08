@@ -21,6 +21,15 @@ urlpatterns = [
 
 
 
+
+    url(r'^group_management/$', views.group_management, name='group_management'),
+
+    url(r'^create_group/$', views.create_group, name='create_group'),
+
+
+
+
+
     url(r'^file_upload/$', views.file_upload, name='file_upload'),
 
     url(r'^file_management/$', views.file_management, name='file_management'),

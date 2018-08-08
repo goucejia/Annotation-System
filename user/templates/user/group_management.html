@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> 用户群组 </title>
+</head>
+<body>
+<script type="text/javascript">
+    function create_group() {
+        var members = $('#group_userID').val();
+        var post_data= {
+            'action': 'create_group',
+            'members': members,
+        };
+        console.log(post_data);
+
+        $.ajax({
+            url: '/user/create_group/',
+            type: 'POST',
+            data: post_data,
+
+            success: function (res) {
+                if (res['correct_members'].length != 0) {
+                    alert('已添加' + res['correct_members']);
+                }
+                if (res['wrong_input'].length != 0) {
+                    alert('wrong input' + res['wrong_input']);
+                }
+            },
+            error: function (err) {
+                alert('网络连接失败，请稍后重试', err);
+            }
+        })
+    }
+</script>
+
+{% extends 'user/user_base.html' %}
+{% block main_body %}
+    <div class="side-body">
+        {#    <a href="{% url 'user:create_group' %}">#}
+        {#        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; 添加群组#}
+        {#    </a>#}
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create_group_modal">
+            新建
+        </button>
+
+        {# 添加群组 Modal#}
+        <div class="modal fade" id="create_group_modal" tabindex="-1" role="dialog" aria-labelledby="create_group_Modal"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="create_group_ModalTitle">新建群组</h5>
+                        <button type="button" data-dismiss="modal" class="close" aria-hidden="true">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="create_group_file_modal_body">
+                        <textarea typeof="text" id="group_userID" placeholder="请输入用户名或邮箱，以回车分隔"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="create_group()">确认</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+{#  ---------------------------------------------------------------------------------------------------------------- #}
+        {# 群组列表 #}
+        <div>
+            <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"> 创建人 </th>
+                        <th scope="col"> 群组id </th>
+                    </tr>
+                    </thead>
+
+                    {% for group in groups %}
+                        <tr id={{  group.group_id }}>
+                            <td>{{ group.owner.username }}</td>
+                            <td>{{ group.group_id }}</td>
+                        </tr>
+                    {% endfor %}
+            </table>
+        </div>
+
+        
+
+
+
+
+
+
+
+    </div>
+{% endblock %}
+
+</body>
+</html>

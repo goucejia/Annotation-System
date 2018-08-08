@@ -78,10 +78,14 @@ class GroupMember(models.Model):
     share_group = models.ForeignKey(Group, on_delete=models.CASCADE, default=None)
     shared_user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
+    def __str__(self):
+        return str(self.share_group.group_id) + ' ; ' + self.shared_user.username
+
 
 # 分享的群文件信息
 class GroupFiles(models.Model):
-    share_group = models.ForeignKey(File, on_delete=models.CASCADE, default=None,
+    share_group = models.ForeignKey(Group, on_delete=models.CASCADE, default=None,
                                     related_name="file_share_group")
     shared_file = models.ForeignKey(File, on_delete=models.CASCADE, default=None,
                                     related_name='shared_file')
+
