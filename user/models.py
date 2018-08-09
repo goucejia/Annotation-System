@@ -88,4 +88,7 @@ class GroupFiles(models.Model):
                                     related_name="file_share_group")
     shared_file = models.ForeignKey(File, on_delete=models.CASCADE, default=None,
                                     related_name='shared_file')
+    
+    
+
 

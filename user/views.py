@@ -168,7 +168,6 @@ def create_group(request):
 def group_management(request):
     user = request.user
     groups = Group.objects.filter(owner=user)
-    # related_group = Group.objects.select_related().filter(owner=user)
 
     print(user)
     print(groups)
@@ -182,7 +181,101 @@ def group_management(request):
     }
     return render(request, 'user/group_management.html', context)
 
+
+@login_required(login_url='/user/login/')
+def edit_group(request, group_id):
+    user = request.user
+    thegroup = Group.objects.select_related().filter(group_id=group_id)[0]
+    members = GroupMember.objects.filter(share_group=thegroup)
+
+    context = {
+        'group': thegroup,
+        'members': members,
+        'user': user,
+    }
+    return render(request, 'user/edit-group.html', context)
+
+@ensure_csrf_cookie
+@csrf_exempt
+@login_required(login_url='/user/login/')
+def delete_member(request):
+    group_id = request.POST.get('group')
+    thegroup = Group.objects.select_related().filter(group_id=group_id)[0]
+    print(thegroup)
+    user = request.user
+
+    c = {}
+    correct_members = []
+    wrong_input = []
+    if request.method == 'POST':
+        to_delete = request.POST.getlist('to_delete[]')
+        # to_delete = request.POST['to_delete']
+        print(to_delete)
+        for p in to_delete:
+            if User.objects.filter(username=p).exists(): # if matched_user is valid, do the deletion
+                matched_user = User.objects.filter(username=p)[0]
+                if matched_user == user:
+                    c['message'] = '无法删除群主'
+                    return JsonResponse(c)
+                else:
+                    GroupMember.objects.filter(share_group=thegroup, shared_user=matched_user).delete()
+                    correct_members.append(p)
+            else:
+                wrong_input.append(p)
+
+    c['correct_members'] = correct_members
+    c['wrong_input'] = wrong_input
+    return JsonResponse(c)
+
+@ensure_csrf_cookie
+@csrf_exempt
+def add_member(request):
+    c = {}
+    correct_members = []
+    wrong_input = []
+
+    if request.method == 'POST':
+        owner = request.user
+        group_id = request.POST.get('group')
+        group = Group.objects.select_related().filter(group_id=group_id)[0]
+        id_input = request.POST.get('members').split('\n')
+
+        for p in id_input:
+            if User.objects.filter(Q(username=p) | Q(email=p)).exists():
+                matched_user = User.objects.filter(Q(username=p) | Q(email=p))[0]
+                member_record = GroupMember(share_group=group, shared_user=matched_user)
+                member_record.save()
+                correct_members.append(p)
+            else:
+                wrong_input.append(p)
+
+    c['correct_members'] = correct_members
+    c['wrong_input'] = wrong_input
+    return JsonResponse(c)
+
+@ensure_csrf_cookie
+@csrf_exempt
+def delete_group(request):
+    c = {}
+    if request.method == 'POST':
+        if request.POST.get('group') != None:
+            user = request.user
+            target_group_id = request.POST.get('group')
+            target_group = Group.objects.filter(group_id=target_group_id)[0]
+            if target_group.owner != user:
+                c['message'] = '非群创建者，没有操作权限'
+                return JsonResponse(c)
+            else:
+                # Delete related record from GroupMember table by CASCADE
+                Group.objects.filter(group_id=target_group_id).delete()
+                c['message'] = '删除成功'
+                return JsonResponse(c)
+    else:
+        return redirect(reverse('user:group_management'))
+
+
 #  -----------------------------------------------------------------------------------------------------------------
+
 
 #
 # 文件管理系统
@@ -303,7 +396,7 @@ def delete_file(request):
             else:
                 # delete from File table, other table auto-delete by CASCADE
                 File.objects.filter(gu_id=target_file_id).delete()
-                c['message'] = '删除成功'
+                c['message'] = '删除成功'  # TODO: delete from file storage
     return JsonResponse(c)
 
 

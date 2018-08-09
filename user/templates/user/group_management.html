@@ -21,7 +21,7 @@
 
             success: function (res) {
                 if (res['correct_members'].length != 0) {
-                    alert('已添加' + res['correct_members']);
+                    alert('已成功创建群组，并添加' + res['correct_members']);
                 }
                 if (res['wrong_input'].length != 0) {
                     alert('wrong input' + res['wrong_input']);
@@ -55,7 +55,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body" id="create_group_file_modal_body">
+                    <div class="modal-body" id="create_group_modal_body">
                         <textarea typeof="text" id="group_userID" placeholder="请输入用户名或邮箱，以回车分隔"></textarea>
                     </div>
                     <div class="modal-footer">
@@ -88,12 +88,20 @@
                         <tr id={{  group.group_id }}>
                             <td>{{ group.owner.username }}</td>
                             <td>{{ group.group_id }}</td>
+
+                            <td>
+                                <button type="button" class="btn btn-default">
+                                    <a href="{% url 'user:edit_group' group.group_id %}"> 管理群组 </a>
+                                </button>
+                            </td>
                         </tr>
                     {% endfor %}
             </table>
         </div>
 
-        
+
+
+
 
 
 
