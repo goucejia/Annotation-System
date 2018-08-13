@@ -45,6 +45,16 @@ class File(models.Model):
         return self.filename + " ; " + self.owner.username + " ; " + self.path.url
 
 
+# 分享组信息 (组长 + 组_ID)
+class Group(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='group_owner')
+    group_id = models.UUIDField(default=uuid.uuid4, null=False, auto_created=True, editable=False)
+    group_name = models.CharField(max_length=255, default='', unique=True)
+
+    def __str__(self):
+        return self.owner.username + ' ；' + str(self.group_id)
+
+
 # 标注信息
 class Label(models.Model):
     label_id = models.UUIDField(default=uuid.uuid4, null=False, auto_created=True, editable=False, primary_key=True)
@@ -55,22 +65,14 @@ class Label(models.Model):
     status = models.CharField(max_length=255, default='')  # 识别 / 删除 / 添加
 
 
-# 单个文件分享记录
+# 文件分享记录
 class FileShare(models.Model):
     file_share_id = models.UUIDField(default=uuid.uuid4, null=False, auto_created=True,
                                      editable=False, primary_key=True)
     shared_file = models.ForeignKey(File, on_delete=models.CASCADE, default=None)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="shared_file_owner", default=None)
     sharer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="shared_file_sharer", default=None)
-
-
-# 分享组信息 (组长 + 组_ID)
-class Group(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='group_owner')
-    group_id = models.UUIDField(default=uuid.uuid4, null=False, auto_created=True, editable=False)
-
-    def __str__(self):
-        return self.owner.username + ' ；' + str(self.group_id)
+    type = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="type", default=None)
 
 
 # 群成员信息

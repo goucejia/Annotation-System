@@ -24,6 +24,8 @@ urlpatterns = [
     # group
     url(r'^group_management/$', views.group_management, name='group_management'),
 
+    url(r'^shared_group_management/$', views.shared_group_management, name='shared_group_management'),
+
     url(r'^create_group/$', views.create_group, name='create_group'),
 
     url(r'^(?P<group_id>[0-9a-f-]+)$', views.edit_group, name='edit_group'),
@@ -34,6 +36,7 @@ urlpatterns = [
     url(r'^add_member/$', views.add_member, name='add_member'),
 
     url(r'^delete_group/$', views.delete_group, name='delete_group'),
+
 
 
     # file
@@ -48,6 +51,8 @@ urlpatterns = [
     url(r'^delete_file/$', views.delete_file, name='delete_file'),
 
     url(r'^share_file/$', views.share_file, name='share_file'),
+
+    url(r'^share_file_to_group/$', views.share_file_to_group, name='share_file_to_group'),
 
     url(r'^edit_file/$', views.edit_file, name='edit_file'),
 

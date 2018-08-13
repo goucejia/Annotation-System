@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> 用户群组 </title>
+</head>
+<body>
+{% extends 'user/user_base.html' %}
+{% block main_body %}
+    <div class="side-body">
+        <ul class="nav nav-pills" style="margin-bottom: 10px;">
+            <li role="presentation"><a href="{% url 'user:group_management' %}">我创建的群组</a></li>
+            <li role="presentation" class="active"><a href="{% url 'user:shared_group_management' %}">我加入的群组</a ></li>
+        </ul>
+
+        <div>
+            <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"> 创建人 </th>
+                        <th scope="col"> 群组id </th>
+                    </tr>
+                    </thead>
+
+                    {% for record in records %}
+                        {% if record.share_group.owner != user %}
+                            <tr id={{  record.share_group.group_id }}>
+                                <td>{{ record.share_group.owner }}</td>
+                                <td>{{ record.share_group.group_id }}</td>
+
+    {#                            <td>#}
+    {#                                <button type="button" class="btn btn-default">#}
+    {#                                    <a href="{% url 'user:edit_group' group.group_id %}"> 管理群组 </a>#}
+    {#                                </button>#}
+    {#                            </td>#}
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+            </table>
+        </div>
+
+
+
+    </div>
+{% endblock %}
+</body>
+</html>

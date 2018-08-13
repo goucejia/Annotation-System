@@ -91,8 +91,13 @@
             success: function (res) {
                 if (res['message'] != 'success') {
                     alert(res['message']);
+                    {#window.location.href = '{% url 'user:group_management' %}';#}
+                    window.location.href = '/user/group_management/';
                 }
-                location.reload();
+                {#location.reload();#}
+{#                if(res['do'] == 'reload'){#}
+{#                    window.location.reload('/user/group_management');#}
+{#                }#}
             },
             error: function (err) {
                 alert('网络连接失败，请稍后重试', err);
@@ -191,20 +196,21 @@
 
                     {% for member in members %}
                         <tr id={{  member.shared_user.user_uuid }}>
-                            <td>
-                                {# store username as its id, thus pass username for deletion as well #}
-                                <input type="checkbox" name="to_delete" value="{{ member.shared_user.username }}"
-                                    id={{ group.group_id }} onclick="select_group(this)">
-                                {{ member.shared_user.username }}
-                            </td>
+                            {% if member.shared_user.username != user.username %}
+                                <td>
+                                    {# store username as its id, thus pass username for deletion as well #}
+                                    <input type="checkbox" name="to_delete" value="{{ member.shared_user.username }}"
+                                        id={{ group.group_id }} onclick="select_group(this)">
+                                    {{ member.shared_user.username }}
+                                </td>
+                            {% else %}
+                                <td> (owner) {{ member.shared_user.username }}</td>
+                            {% endif %}
+
                         </tr>
                     {% endfor %}
             </table>
         </div>
-
-
-
-
 
 
      </div>

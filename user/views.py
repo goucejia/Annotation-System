@@ -139,9 +139,14 @@ def create_group(request):
     if request.method == 'POST':
         owner = request.user
         id_input = request.POST.get('members').split('\n')
+        name_input = request.POST.get('name')
 
-        group = Group(owner=owner,)
-        group.save()
+        if Group.objects.filter(group_name=name_input).exists():   # check if group with same name exists
+            c = {'error': 'duplicate', }
+            return JsonResponse(c)
+        else:
+            group = Group(owner=owner, group_name=name_input)
+            group.save()
 
         for p in id_input:
             if User.objects.filter(Q(username=p) | Q(email=p)).exists():
@@ -180,6 +185,17 @@ def group_management(request):
         'user': user,
     }
     return render(request, 'user/group_management.html', context)
+
+
+@login_required(login_url='/user/login/')
+def shared_group_management(request):
+    user = request.user
+    records = GroupMember.objects.select_related('share_group').filter(shared_user=user)  # includes groups user owned, handle in html
+    context = {
+        'records': records,
+        'user': user,
+    }
+    return render(request, 'user/shared_group_management.html', context)
 
 
 @login_required(login_url='/user/login/')
@@ -270,8 +286,8 @@ def delete_group(request):
                 Group.objects.filter(group_id=target_group_id).delete()
                 c['message'] = '删除成功'
                 return JsonResponse(c)
-    else:
-        return redirect(reverse('user:group_management'))
+    # else:
+    #     return render(request, '')
 
 
 #  -----------------------------------------------------------------------------------------------------------------
@@ -426,6 +442,33 @@ def share_file(request):
     c['correct_co_editors'] = correct_co_editors
     c['wrong_input'] = wrong_input
     return JsonResponse(c)
+
+
+@ensure_csrf_cookie
+@csrf_exempt
+@login_required(login_url='/user/login/')
+def share_file_to_group(request):
+    c = {}
+    correct_group = []
+    wrong_input = []
+
+    if request.method == 'POST':
+        owner = request.user
+        file_guid = request.POST.get('file_guid')
+        share_input = request.POST.get('co_groupID').split('\n')
+
+        shared_file = File.objects.filter(gu_id=file_guid)[0]
+        for p in share_input:
+            if Group.objects.filter(group_id=p).exists():   # found match
+                matched_group = Group.objects.select_related().filter(group_id=p)[0]
+
+
+
+
+
+    return render(request, 'check_success.html')
+
+
 
 @ensure_csrf_cookie
 @csrf_exempt

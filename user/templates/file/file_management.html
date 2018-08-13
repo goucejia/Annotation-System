@@ -66,6 +66,34 @@
                 }
             })
         }
+
+        function share_file_to_group() {
+            var share_to = $('#share_groupID').val();
+            var post_data = {
+                'action' : 'share_file_to_group',
+                'file_guid' : current_file_guid,
+                'groupID' : share_to,
+            };
+            console.log(post_data);
+
+            {#$.ajax({#}
+            {#    url: '/user/share_file_to_group/',#}
+            {#    type: 'POST',#}
+            {#    data: post_data,#}
+            {#    success: function (res) {#}
+            {#        console.log('ojbk');#}
+            {#        if (res['correct_co_editors'].length != 0) {#}
+            {#            alert('已分享：' + res['correct_co_editors']);#}
+            {#        }#}
+            {#        if (res['wrong_input'].length != 0) {#}
+            {#            alert(res['wrong_input']);#}
+            {#        }#}
+            {#    },#}
+            {#    error: function (err) {#}
+            {#        alert('网络连接失败,请稍后重试', err);#}
+            {#    }#}
+            {#/})#}
+        }
     </script>
 
     {% extends 'file/file_base.html' %}
@@ -101,15 +129,25 @@
 
                             {# 删除键 #}
                             <td>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#delete_file_modal">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#delete_file_modal"
+                                id="{{ file.gu_id }}" onclick="select_file(this)">
                                     删除文件
                                 </button>
                             </td>
 
                             {# 分享键 #}
                             <td>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#share_file_modal">
-                                    分享
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#share_file_modal"
+                                id={{ file.gu_id }} onclick="select_file(this)">
+                                    分享到个人
+                                </button>
+                            </td>
+
+                            {# 分享到群组键 #}
+                            <td>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#share_file_group_modal"
+                                id={{ file.gu_id }} onclick="select_file(this)">
+                                    分享到群组
                                 </button>
                             </td>
 
@@ -181,6 +219,28 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" onclick="share_file()">确认</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# share file to group modal #}
+            <div class="modal fade" id="share_file_group_modal" tabindex="-1" role="dialog" aria-labelledby="share_groupModal"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="share_groupModalTitle">分享文件给他人</h5>
+                            <button type="button" data-dismiss="modal" class="close" aria-hidden="true">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="share_file_to_group_modal_body">
+                            <textarea typeof="text" id="share_groupID" placeholder="请输入分享群组的uuid，以回车分隔"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="share_file_to_group()">确认</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                         </div>
                     </div>
