@@ -174,9 +174,6 @@ def group_management(request):
     user = request.user
     groups = Group.objects.filter(owner=user)
 
-    print(user)
-    print(groups)
-
     # for group in groups:   # find the members in each group and store username in array (as string?)
     #     members = GroupMember.objects.filter(share_group=group)
 
@@ -217,7 +214,6 @@ def edit_group(request, group_id):
 def delete_member(request):
     group_id = request.POST.get('group')
     thegroup = Group.objects.select_related().filter(group_id=group_id)[0]
-    print(thegroup)
     user = request.user
 
     c = {}
@@ -392,8 +388,33 @@ def share_file_view(request):
     return render(request, 'file/shared_with_me.html', context)
 
 @login_required(login_url='/user/login/')
-def group_file_view(request):   # TODO: complete function
-    return render(request, 'check_success.html')
+def group_file_view(request):
+    user = request.user
+    if GroupMember.objects.select_related().filter(shared_user=user).exists():  # check if user belongs to any group
+        records = GroupMember.objects.select_related().filter(shared_user=user)
+        ret = File.objects.none()  # initialize a empty query for merge and return
+        for g in records:
+            print(g)
+            group = g.share_group
+            # files = GroupFiles.objects.select_related().filter(share_group=group)
+            # print(files)
+            try:
+                ret |= GroupFiles.objects.select_related().filter(share_group=group)
+                print(ret)
+            except GroupFiles.DoesNotExist:
+                pass
+        context = {
+            'user': user,
+            'group_files': ret,
+            'msg_code': 0,
+        }
+        return render(request, 'file/group_share_files.html', context)
+    else:
+        context = {
+            'user': user,
+            'msg_code': 1,
+        }
+    return render(request, 'file/group_share_files.html', context)
 
 
 @ensure_csrf_cookie
@@ -412,7 +433,7 @@ def delete_file(request):
             else:
                 # delete from File table, other table auto-delete by CASCADE
                 File.objects.filter(gu_id=target_file_id).delete()
-                c['message'] = '删除成功'  # TODO: delete from file storage
+                c['message'] = '删除成功'
     return JsonResponse(c)
 
 
@@ -453,20 +474,25 @@ def share_file_to_group(request):
     wrong_input = []
 
     if request.method == 'POST':
-        owner = request.user
+        # owner = request.user
         file_guid = request.POST.get('file_guid')
-        share_input = request.POST.get('co_groupID').split('\n')
+        share_input = request.POST.get('groupID').split('\n')
 
         shared_file = File.objects.filter(gu_id=file_guid)[0]
         for p in share_input:
-            if Group.objects.filter(group_id=p).exists():   # found match
-                matched_group = Group.objects.select_related().filter(group_id=p)[0]
+            if Group.objects.filter(group_name=p).exists():   # if matched group exists
+                matched_group = Group.objects.select_related().filter(group_name=p)[0]
+                # group_records = GroupMember.objects.filter(share_group=matched_group).all()
+                # print(group_records)
+                group_record = GroupFiles(share_group=matched_group, shared_file=shared_file)
+                group_record.save()
+                correct_group.append(p)
+            else:
+                wrong_input.append(p)
 
-
-
-
-
-    return render(request, 'check_success.html')
+    c['correct_group'] = correct_group
+    c['wrong_input'] = wrong_input
+    return JsonResponse(c)
 
 
 

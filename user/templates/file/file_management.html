@@ -55,7 +55,7 @@
                 success: function (res) {
                     console.log('ojbk');
                     if (res['correct_co_editors'].length != 0) {
-                        alert('已分享：' + res['correct_co_editors']);
+                        alert('已分享到：' + res['correct_co_editors']);
                     }
                     if (res['wrong_input'].length != 0) {
                         alert(res['wrong_input']);
@@ -76,23 +76,23 @@
             };
             console.log(post_data);
 
-            {#$.ajax({#}
-            {#    url: '/user/share_file_to_group/',#}
-            {#    type: 'POST',#}
-            {#    data: post_data,#}
-            {#    success: function (res) {#}
-            {#        console.log('ojbk');#}
-            {#        if (res['correct_co_editors'].length != 0) {#}
-            {#            alert('已分享：' + res['correct_co_editors']);#}
-            {#        }#}
-            {#        if (res['wrong_input'].length != 0) {#}
-            {#            alert(res['wrong_input']);#}
-            {#        }#}
-            {#    },#}
-            {#    error: function (err) {#}
-            {#        alert('网络连接失败,请稍后重试', err);#}
-            {#    }#}
-            {#/})#}
+            $.ajax({
+                url: '/user/share_file_to_group/',
+                type: 'POST',
+                data: post_data,
+                success: function (res) {
+                    console.log('ojbk');
+                    if (res['correct_group'].length != 0) {
+                        alert('已分享到群组：' + res['correct_group']);
+                    }
+                    if (res['wrong_input'].length != 0) {
+                        alert(res['wrong_input']);
+                    }
+                },
+                error: function (err) {
+                    alert('网络连接失败,请稍后重试', err);
+                }
+            })
         }
     </script>
 
@@ -237,7 +237,7 @@
                             </button>
                         </div>
                         <div class="modal-body" id="share_file_to_group_modal_body">
-                            <textarea typeof="text" id="share_groupID" placeholder="请输入分享群组的uuid，以回车分隔"></textarea>
+                            <textarea typeof="text" id="share_groupID" placeholder="请输入想要分享到的群组名字，以回车分隔"></textarea>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" onclick="share_file_to_group()">确认</button>

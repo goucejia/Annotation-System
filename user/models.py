@@ -52,7 +52,7 @@ class Group(models.Model):
     group_name = models.CharField(max_length=255, default='', unique=True)
 
     def __str__(self):
-        return self.owner.username + ' ；' + str(self.group_id)
+        return self.owner.username + ' ；' + str(self.group_name)
 
 
 # 标注信息
@@ -72,7 +72,7 @@ class FileShare(models.Model):
     shared_file = models.ForeignKey(File, on_delete=models.CASCADE, default=None)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="shared_file_owner", default=None)
     sharer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="shared_file_sharer", default=None)
-    type = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="type", default=None)
+    # type = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="type", default=None)
 
 
 # 群成员信息
@@ -81,7 +81,7 @@ class GroupMember(models.Model):
     shared_user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
-        return str(self.share_group.group_id) + ' ; ' + self.shared_user.username
+        return str(self.share_group.group_name) + ' ; ' + self.shared_user.username
 
 
 # 分享的群文件信息
@@ -90,6 +90,9 @@ class GroupFiles(models.Model):
                                     related_name="file_share_group")
     shared_file = models.ForeignKey(File, on_delete=models.CASCADE, default=None,
                                     related_name='shared_file')
+
+    def __str__(self):
+        return str(self.share_group.group_name) + " ; " + str(self.shared_file.filename)
     
     
 

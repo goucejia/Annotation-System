@@ -5,8 +5,17 @@
     <title>群分享文件</title>
 </head>
 <body>
-    {% extends 'file/file_base.html' %}
-   {% block main_body %}  {#TODO: modify view#}
+    <script type="text/javascript">
+        var current_file_guid = '';
+
+        function select_file(element){
+            current_file_guid = element.id;
+            console.log(current_file_guid);
+        }
+    </script>
+
+   {% extends 'file/file_base.html' %}
+   {% block main_body %}
        <div class="side-body">
 
             <ul class="nav nav-pills" style="margin-bottom: 10px;">
@@ -14,7 +23,33 @@
                  <li role="presentation" class="active"><a href="{% url 'user:group_files_view' %}">群分享文件</a ></li>
             </ul>
 
-            <h5>hello, world.</h5>
+
+            {#   group files   #}
+            {% if msg_code == 0 %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"> 文件名 </th>
+                        <th scope="col"> 上传者 </th>
+                        <th scope="col"> 分享组 </th>
+{#                        <th scope="col"> 最后修改时间 </th>#}
+                    </tr>
+                    </thead>
+
+                    {% for record in group_files %}
+                        <tr id={{  record.shared_file.gu_id }} oncontextmenu="select_file(this)">
+                            <td>{{ record.shared_file.filename }}</td>
+                            <td>{{ record.shared_file.owner.username }}</td>
+                            <td>{{ record.share_group.group_name }}</td>
+
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+
+            {% if msg_code == 1 %}
+                <h5> 还没有人与您分享文件 </h5>
+            {% endif %}
 
        </div>
     {% endblock %}
