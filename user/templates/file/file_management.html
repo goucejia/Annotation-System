@@ -54,12 +54,17 @@
                 data: post_data,
                 success: function (res) {
                     console.log('ojbk');
+                    var msg = '';
                     if (res['correct_co_editors'].length != 0) {
-                        alert('已分享到：' + res['correct_co_editors']);
+                        msg += '已分享到：' + res['correct_co_editors'] + '\n';
+                    }
+                    if (res['duplicate'].length != 0) {
+                        msg += '重复分享给：' + res['duplicate'] + '\n';
                     }
                     if (res['wrong_input'].length != 0) {
-                        alert(res['wrong_input']);
+                        msg += '没有找到' + res['wrong_input'] + ',请检查输入字段是否有误';
                     }
+                    alert(msg)
                 },
                 error: function (err) {
                     alert('网络连接失败,请稍后重试', err);
@@ -82,12 +87,17 @@
                 data: post_data,
                 success: function (res) {
                     console.log('ojbk');
+                    var msg = '';
                     if (res['correct_group'].length != 0) {
-                        alert('已分享到群组：' + res['correct_group']);
+                        msg += '已分享到群组：' + res['correct_group'] + '\n';
+                    }
+                    if (res['duplicate'].length != 0) {
+                        msg += '重复分享给：' + res['duplicate'] + '\n';
                     }
                     if (res['wrong_input'].length != 0) {
-                        alert(res['wrong_input']);
+                        msg += '没有找到群组' + res['wrong_input'] + ',请检查输入字段是否有误';
                     }
+                    alert(msg)
                 },
                 error: function (err) {
                     alert('网络连接失败,请稍后重试', err);

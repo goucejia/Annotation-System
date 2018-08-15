@@ -444,6 +444,7 @@ def share_file(request):
     c = {}
     correct_co_editors = []
     wrong_input = []
+    duplicate = []
 
     if request.method == 'POST':
         owner = request.user
@@ -454,14 +455,18 @@ def share_file(request):
         for p in share_input:
             if User.objects.filter(Q(username=p) | Q(email=p)).exists():  # input has a match
                 matched_editor = User.objects.filter(Q(username=p) | Q(email=p))[0]
-                correct_co_editors.append(p)
-                share = FileShare(owner=owner, sharer=matched_editor, shared_file=shared_file)
-                share.save()
+                if FileShare.objects.filter(owner=owner, sharer=matched_editor, shared_file=shared_file).exists():
+                    duplicate.append(p)
+                else:
+                    share = FileShare(owner=owner, sharer=matched_editor, shared_file=shared_file)
+                    share.save()
+                    correct_co_editors.append(p)
             else:
                 wrong_input.append(p)
 
     c['correct_co_editors'] = correct_co_editors
     c['wrong_input'] = wrong_input
+    c['duplicate'] = duplicate
     return JsonResponse(c)
 
 
@@ -472,6 +477,7 @@ def share_file_to_group(request):
     c = {}
     correct_group = []
     wrong_input = []
+    duplicate = []
 
     if request.method == 'POST':
         # owner = request.user
@@ -482,16 +488,18 @@ def share_file_to_group(request):
         for p in share_input:
             if Group.objects.filter(group_name=p).exists():   # if matched group exists
                 matched_group = Group.objects.select_related().filter(group_name=p)[0]
-                # group_records = GroupMember.objects.filter(share_group=matched_group).all()
-                # print(group_records)
-                group_record = GroupFiles(share_group=matched_group, shared_file=shared_file)
-                group_record.save()
-                correct_group.append(p)
+                if GroupFiles.objects.filter(share_group=matched_group, shared_file=shared_file).exists():
+                    duplicate.append(p)
+                else:
+                    group_record = GroupFiles(share_group=matched_group, shared_file=shared_file)
+                    group_record.save()
+                    correct_group.append(p)
             else:
                 wrong_input.append(p)
 
     c['correct_group'] = correct_group
     c['wrong_input'] = wrong_input
+    c['duplicate'] = duplicate
     return JsonResponse(c)
 
 
