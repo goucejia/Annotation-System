@@ -22,16 +22,17 @@
             data: post_data,
 
             success: function (res) {
+                var msg = '';
                 if (res['error'] == 'duplicate') {
                     alert('已存在同名群组，请更换名字');
                 }
                 if (res['correct_members'].length != 0) {
-                    alert('已成功创建群组' + name + '，并添加' + res['correct_members']);
+                    msg += '已成功创建群组' + name + '，并添加' + res['correct_members'];
                 }
                 if (res['wrong_input'].length != 0) {
-                    alert('wrong input' + res['wrong_input']);
+                    msg += 'wrong input' + res['wrong_input'];
                 }
-
+                alert(msg);
                 location.reload()
             },
             error: function (err) {
@@ -72,7 +73,7 @@
                         <textarea typeof="text" id="group_userID" placeholder="请输入用户名或邮箱，以回车分隔"></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="create_group()">确认</button>
+                        <button type="button" class="btn btn-primary" onclick="create_group()" data-dismiss="modal">确认</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     </div>
                 </div>

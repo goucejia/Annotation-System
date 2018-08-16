@@ -161,6 +161,13 @@
                                 </button>
                             </td>
 
+                            {# 分享状态管理 #}
+                            <td>
+                                <button type="button" class="btn btn-default">
+                                    <a href="{% url 'user:share_status_management' file.gu_id %}"> 查看分享状态 </a>
+                                </button>
+                            </td>
+
 
 {#                            <td>#}
 {#                                <button type="button" onclick="select_file({{ file.gu_id }})">#}
@@ -206,7 +213,7 @@
                             确认删除文件?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="delete_file()">确认删除</button>
+                            <button type="button" class="btn btn-primary" onclick="delete_file()" data-dismiss="modal">确认删除</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                         </div>
                     </div>
@@ -228,7 +235,7 @@
                             <textarea typeof="text" id="share_userID" placeholder="请输入用户名或邮箱，以回车分隔"></textarea>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="share_file()">确认</button>
+                            <button type="button" class="btn btn-primary" onclick="share_file()" data-dismiss="modal">确认</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                         </div>
                     </div>
@@ -250,7 +257,7 @@
                             <textarea typeof="text" id="share_groupID" placeholder="请输入想要分享到的群组名字，以回车分隔"></textarea>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="share_file_to_group()">确认</button>
+                            <button type="button" class="btn btn-primary" onclick="share_file_to_group()" data-dismiss="modal">确认</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                         </div>
                     </div>

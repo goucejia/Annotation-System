@@ -222,7 +222,7 @@ def delete_member(request):
     if request.method == 'POST':
         to_delete = request.POST.getlist('to_delete[]')
         # to_delete = request.POST['to_delete']
-        print(to_delete)
+        # print(to_delete)
         for p in to_delete:
             if User.objects.filter(username=p).exists(): # if matched_user is valid, do the deletion
                 matched_user = User.objects.filter(username=p)[0]
@@ -373,7 +373,7 @@ def file_management(request):
 
 
 @login_required(login_url='/user/login/')
-def share_file_view(request):
+def shared_file_view(request):
     user = request.user
     shared_files = FileShare.objects.filter(sharer=user)
     if shared_files.exists():
@@ -394,13 +394,13 @@ def group_file_view(request):
         records = GroupMember.objects.select_related().filter(shared_user=user)
         ret = File.objects.none()  # initialize a empty query for merge and return
         for g in records:
-            print(g)
+            # print(g)
             group = g.share_group
             # files = GroupFiles.objects.select_related().filter(share_group=group)
             # print(files)
             try:
                 ret |= GroupFiles.objects.select_related().filter(share_group=group)
-                print(ret)
+                # print(ret)
             except GroupFiles.DoesNotExist:
                 pass
         context = {
@@ -502,6 +502,62 @@ def share_file_to_group(request):
     c['duplicate'] = duplicate
     return JsonResponse(c)
 
+@ensure_csrf_cookie
+@csrf_exempt
+@login_required(login_url='/user/login/')
+def share_status_management(request, file_guid):
+    user = request.user
+    thefile = File.objects.select_related().filter(gu_id=file_guid)[0]
+
+    # user_shares = FileShare.objects.filter(shared_file=thefile, owner=user)
+    user_shares = FileShare.objects.filter(shared_file=thefile)
+    group_shares = GroupFiles.objects.filter(shared_file=thefile)
+
+    context = {
+        'user': user,
+        'file': thefile,
+        'user_shares': user_shares,
+        'group_shares': group_shares,
+    }
+
+    return render(request, 'file/share_status_management.html', context)
+
+
+@ensure_csrf_cookie
+@csrf_exempt
+@login_required(login_url='/user/login/')
+def remove_share_record(request):
+    file_id = request.POST.get('file')
+    thefile = File.objects.filter(gu_id=file_id)[0]
+
+    c = {}
+    deleted_group = []
+    deleted_user = []
+    error = []
+    if request.method == 'POST':
+        user_to_remove = request.POST.getlist('user_to_remove[]')
+        group_to_remove = request.POST.getlist('group_to_remove[]')
+        # remove user record
+        for u in user_to_remove:
+            if User.objects.filter(username=u).exists():   # check if matched user exists
+                matched_user = User.objects.filter(username=u)[0]  # TODO: 如何处理取消分享给自己？
+                FileShare.objects.filter(shared_file=thefile, sharer=matched_user).delete()
+                deleted_user.append(u)
+            else:
+                error.append(u)
+        # remove group record
+        for g in group_to_remove:
+            if Group.objects.filter(group_name=g).exists():   # check if matched group exists
+                matched_group = Group.objects.filter(group_name=g)[0]
+                GroupFiles.objects.filter(share_group=matched_group, shared_file=thefile).delete()
+                deleted_group.append(g)
+            else:
+                error.append(g)
+
+    c['deleted_user'] = deleted_user
+    c['deleted_group'] = deleted_group
+    c['error'] = error
+    return JsonResponse(c)
 
 
 @ensure_csrf_cookie

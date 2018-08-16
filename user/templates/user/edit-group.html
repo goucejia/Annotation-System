@@ -31,13 +31,16 @@
             data: post_data,
 
             success: function (res) {
+                var msg = '';
                 if (res['correct_members'].length != 0) {
-                    alert('已删除' + res['correct_members']);
-                    location.reload();
+                    msg += '已删除' + res['correct_members'];
+                    {#location.reload();#}
                 }
                 if (res['wrong_input'].length != 0) {
-                    alert('wrong input ' + res['wrong_input']);
+                    msg += 'wrong input ' + res['wrong_input'];
                 }
+                alert(msg);
+                location.reload();
             },
             error: function (err) {
                 alert('网络连接失败，请稍后重试', err);
@@ -121,7 +124,8 @@
 
                         {# Buttons - delete members #}
                         <th>
-                            <button type="button" class="btn btn-default" onclick="delete_member()">
+                            <button type="button" class="btn btn-default" id={{ group.group_id }}
+                                    onclick="select_group(this);delete_member();">
                                 删除成员
                             </button>
                         </th>
@@ -151,7 +155,7 @@
                                         <textarea typeof="text" id="group_userID" placeholder="请输入用户名或邮箱，以回车分隔"></textarea>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" onclick="add_member()">确认添加</button>
+                                        <button type="button" class="btn btn-primary" onclick="add_member()" data-dismiss="modal">确认添加</button>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                                     </div>
                                 </div>
@@ -183,7 +187,7 @@
                                         <h5>确认删除群组？本操作不可撤销。</h5>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" onclick="delete_group()">确认删除</button>
+                                        <button type="button" class="btn btn-primary" onclick="delete_group()" data-dismiss="modal">确认删除</button>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                                     </div>
                                 </div>
@@ -199,8 +203,7 @@
                             {% if member.shared_user.username != user.username %}
                                 <td>
                                     {# store username as its id, thus pass username for deletion as well #}
-                                    <input type="checkbox" name="to_delete" value="{{ member.shared_user.username }}"
-                                        id={{ group.group_id }} onclick="select_group(this)">
+                                    <input type="checkbox" name="to_delete" value="{{ member.shared_user.username }}">
                                     {{ member.shared_user.username }}
                                 </td>
                             {% else %}
