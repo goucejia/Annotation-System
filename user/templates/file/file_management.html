@@ -97,13 +97,57 @@
                     if (res['wrong_input'].length != 0) {
                         msg += '没有找到群组' + res['wrong_input'] + ',请检查输入字段是否有误';
                     }
-                    alert(msg)
+                    alert(msg);
                 },
                 error: function (err) {
                     alert('网络连接失败,请稍后重试', err);
                 }
             })
         }
+
+        {#function sort_file(selectedValue) {#}
+        {#    var sort_by = selectedValue;#}
+        {#    var post_data = {#}
+        {#        'action': 'sort_file',#}
+        {#        'sort_by': sort_by,#}
+        {#    };#}
+        {#    console.log(post_data);#}
+        {##}
+        {#    $.ajax({#}
+        {#        url: '/user/sort_file/',#}
+        {#        type: 'POST',#}
+        {#        data: post_data,#}
+        {##}
+        {#        success: function (res) {#}
+                    {#location.reload()#}
+        {#            window.location.replace('/user/sort_file/');#}
+                    {#window.location.href = "/user/sort_file/";#}
+        {#        },#}
+        {#        error: function (err) {#}
+        {#            alert('网络连接失败,请稍后重试', err);#}
+        {#        }#}
+        {#    })#}
+        {#/}#}
+
+        {#$(function sort_file(){#}
+        {#        var $box = $('.selectBox');#}
+        {#        $box.on('change', 'select:has(option[href])', function(e) {#}
+        {#            var _this = $(this),#}
+        {#            _href = _this.find('option:selected').attr('href');#}
+                    {#window.location.href = _href;#}
+        {#            window.open(_href);#}
+        {#    })#}
+        {#/})#}
+
+        function sort(obj) {
+            var _href = obj.options[obj.selectedIndex].value;
+            console.log(_href);
+
+            {#open(_href,'_blank');#}
+            window.location.href = _href;x
+
+        }
+
     </script>
 
     {% extends 'file/file_base.html' %}
@@ -113,7 +157,54 @@
             <ul class="nav nav-pills" style="margin-bottom: 10px;">
                  <li role="presentation" class="active"><a href="{% url 'user:file_management' %}">文件列表</a></li>
                  <li role="presentation"><a href="{% url 'user:file_upload' %}">上传文件</a ></li>
+
+
             </ul>
+
+            {% if order == 0 %}
+                <div class="selectBox">
+                    <label>文件排序</label>
+                    <label>
+    {#                    <select name="sort_by" onchange="window.location.href(this.options[this.selectedIndex].value)">#}
+                        <select name="sort_by" onchange="sort(this)">
+    {#                        <option value="upload_time" href="{% url 'user:file_management' %}">上传时间</option>#}
+    {#                        <option value="modify_time" href="{% url 'user:file_management_by_modify_time' %}">最后修改时间</option>#}
+    {#                        <option value="filename" href="{% url 'user:file_management_by_filename' %}">文件名</option>#}
+
+                            <option value="{% url 'user:file_management' %}" selected="selected">上传时间</option>
+                            <option value="{% url 'user:file_management_by_modify_time' %}">最后修改时间</option>
+                            <option value="{% url 'user:file_management_by_filename' %}">文件名</option>
+                        </select>
+                    </label>
+                </div>
+            {% endif %}
+
+            {% if order == 1 %}
+                <div class="selectBox">
+                    <label>文件排序</label>
+                    <label>
+                        <select name="sort_by" onchange="sort(this)">
+                            <option value="{% url 'user:file_management' %}">上传时间</option>
+                            <option value="{% url 'user:file_management_by_modify_time' %}" selected="selected">最后修改时间</option>
+                            <option value="{% url 'user:file_management_by_filename' %}">文件名</option>
+                        </select>
+                    </label>
+                </div>
+            {% endif %}
+
+            {% if order == 2 %}
+                <div class="selectBox">
+                    <label>文件排序</label>
+                    <label>
+                        <select name="sort_by" onchange="sort(this)">
+                            <option value="{% url 'user:file_management' %}">上传时间</option>
+                            <option value="{% url 'user:file_management_by_modify_time' %}">最后修改时间</option>
+                            <option value="{% url 'user:file_management_by_filename' %}" selected="selected">文件名</option>
+                        </select>
+                    </label>
+                </div>
+            {% endif %}
+
 
             {% if msg == 1 %}
                 <h5> 您还没有上传文件 </h5>
@@ -126,8 +217,8 @@
                     <tr>
                         <th scope="col"> 文件名 </th>
                         <th scope="col"> 上传者 </th>
-                        <th scope="col"> UUID </th>
-{#                        <th scope="col"> 最后修改时间 </th>#}
+                        <th scope="col"> 上传时间 </th>
+                        <th scope="col"> 最后修改时间 </th>
                     </tr>
                     </thead>
 
@@ -135,15 +226,8 @@
                         <tr id={{  file.gu_id }} oncontextmenu="select_file(this)">
                             <td>{{ file.filename }}</td>
                             <td>{{ file.owner.username }}</td>
-                            <td>{{ file.gu_id }}</td>
-
-                            {# 删除键 #}
-                            <td>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#delete_file_modal"
-                                id="{{ file.gu_id }}" onclick="select_file(this)">
-                                    删除文件
-                                </button>
-                            </td>
+                            <td>{{ file.date_uploaded }}</td>
+                            <td>{{ file.last_modified }}</td>
 
                             {# 分享键 #}
                             <td>
@@ -165,6 +249,14 @@
                             <td>
                                 <button type="button" class="btn btn-default">
                                     <a href="{% url 'user:share_status_management' file.gu_id %}"> 查看分享状态 </a>
+                                </button>
+                            </td>
+
+                            {# 删除键 #}
+                            <td>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_file_modal"
+                                id="{{ file.gu_id }}" onclick="select_file(this)">
+                                    删除文件
                                 </button>
                             </td>
 

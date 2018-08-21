@@ -32,7 +32,7 @@
                         <th scope="col"> 文件名 </th>
                         <th scope="col"> 上传者 </th>
                         <th scope="col"> 分享组 </th>
-{#                        <th scope="col"> 最后修改时间 </th>#}
+                        <th scope="col"> 最后修改时间 </th>
                     </tr>
                     </thead>
 
@@ -41,6 +41,7 @@
                             <td>{{ record.shared_file.filename }}</td>
                             <td>{{ record.shared_file.owner.username }}</td>
                             <td>{{ record.share_group.group_name }}</td>
+                            <td>{{ record.shared_file.last_modified }}</td>
 
                         </tr>
                     {% endfor %}

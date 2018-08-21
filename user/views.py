@@ -359,7 +359,16 @@ def file_upload(request):
 @login_required(login_url='/user/login/')
 def file_management(request):
     user = request.user
-    files = File.objects.filter(owner=user)
+    # order = 'upload_time'   # default order by file upload time
+    files = File.objects.filter(owner=user).order_by('-date_uploaded')  # default order by file upload time
+
+    # if order == 'upload_time':
+    #     files = File.objects.filter(owner=user).order_by('-date_uploaded')
+    # elif order == 'modify_time':
+    #     files = File.objects.filter(owner=user).order_by('-last_modified')
+    # elif order == 'filename':
+    #     files = File.objects.filter(owner=user).order_by('filename')
+
     if files.exists():
         msg_code = 0
     else:
@@ -368,8 +377,72 @@ def file_management(request):
         'user': user,
         'files': files,
         'msg': msg_code,
+        'order': 0,   # upload_time
     }
     return render(request, 'file/file_management.html', context)
+
+
+@login_required(login_url='/user/login/')
+def file_management_by_modify_time(request):
+    user = request.user
+    files = File.objects.filter(owner=user).order_by('-last_modified')  # order by last modify time
+
+    if files.exists():
+        msg_code = 0
+    else:
+        msg_code = 1
+    context = {
+        'user': user,
+        'files': files,
+        'msg': msg_code,
+        'order': 1,   # last_modified
+    }
+    return render(request, 'file/file_management.html', context)
+
+
+@login_required(login_url='/user/login/')
+def file_management_by_filename(request):
+    user = request.user
+    files = File.objects.filter(owner=user).order_by('filename')  # order by filename
+    # print(files)
+
+    if files.exists():
+        msg_code = 0
+    else:
+        msg_code = 1
+    context = {
+        'user': user,
+        'files': files,
+        'msg': msg_code,
+        'order': 2,  # filename
+    }
+    return render(request, 'file/file_management.html', context)
+
+
+# @ensure_csrf_cookie
+# @csrf_exempt
+# def sort_file(request):
+#     user = request.user
+#     flag = ''
+#     # files = None
+#     if request.method == 'POST':
+#         sort_by = request.POST.get('sort_by')  # upload_time / modify_time / filename
+#         if sort_by == 'upload_time':
+#             flag = 'upload_time'
+#             files = File.objects.filter(owner=user).order_by('-date_uploaded')
+#         elif sort_by == 'modify_time':
+#             flag = 'modify_time'
+#             files = File.objects.filter(owner=user).order_by('-last_modified')
+#         elif sort_by == 'filename':
+#             flag = 'filename'
+#             files = File.objects.filter(owner=user).order_by('filename')
+#     print(files)
+#     print(flag)
+#     context = {
+#         'files': files,
+#         'flag': flag,
+#     }
+#     return render(request, 'file/file_management.html', context)
 
 
 @login_required(login_url='/user/login/')
@@ -387,6 +460,7 @@ def shared_file_view(request):
     }
     return render(request, 'file/shared_with_me.html', context)
 
+
 @login_required(login_url='/user/login/')
 def group_file_view(request):
     user = request.user
@@ -403,6 +477,7 @@ def group_file_view(request):
                 # print(ret)
             except GroupFiles.DoesNotExist:
                 pass
+        ret.order_by('-date_uploaded')  # default order by file upload time
         context = {
             'user': user,
             'group_files': ret,

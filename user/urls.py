@@ -43,6 +43,8 @@ urlpatterns = [
     url(r'^file_upload/$', views.file_upload, name='file_upload'),
 
     url(r'^file_management/$', views.file_management, name='file_management'),
+    url(r'^file_management_by_modify_time/$', views.file_management_by_modify_time, name='file_management_by_modify_time'),
+    url(r'^file_management_by_filename/$', views.file_management_by_filename, name='file_management_by_filename'),
 
     url(r'^shared_file_view/$', views.shared_file_view, name='shared_file_view'),
 
@@ -59,5 +61,7 @@ urlpatterns = [
     url(r'^share_status/(?P<file_guid>[0-9a-f-]+)$', views.share_status_management, name='share_status_management'),
 
     url(r'^remove_share_record/$', views.remove_share_record, name='remove_share_record'),
+
+    # url(r'^sort_file/$', views.sort_file, name='sort_file'),
 
 ]

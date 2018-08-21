@@ -29,8 +29,8 @@
                     <tr>
                         <th scope="col"> 文件名 </th>
                         <th scope="col"> 上传者 </th>
-                        <th scope="col"> UUID </th>
-    {#                    <th scope="col"> 最后修改时间 </th>#}
+{#                        <th scope="col"> UUID </th>#}
+                        <th scope="col"> 最后修改时间 </th>
                     </tr>
                     </thead>
 
@@ -38,7 +38,8 @@
                         <tr id={{  file.shared_file.gu_id }} oncontextmenu="select_file(this)">
                             <td>{{ file.shared_file.filename }}</td>
                             <td>{{ file.owner.username }}</td>
-                            <td>{{ file.shared_file.gu_id }}</td>
+{#                            <td>{{ file.shared_file.gu_id }}</td>#}
+                            <td>{{ file.shared_file.last_modified }}</td>
 
 
                             {# 标注键 #}
