@@ -57,10 +57,10 @@ def login(request):
                 # albums = Album.objects.filter(user=request.user)
                 return render(request, 'user/user_homepage.html', {user: 'user'})
             else:
-                return render(request, 'user/login.html', {'error_message': 'Your account has been disabled'})
+                return render(request, 'user/login_page.html', {'error_message': 'Your account has been disabled'})
         else:
-            return render(request, 'user/login.html', {'error_message': 'Invalid login'})
-    return render(request, 'user/login.html')
+            return render(request, 'user/login_page.html', {'error_message': 'Invalid login'})
+    return render(request, 'user/login_page.html')
 
 
 def password_reset_by_email(request):  # TODO: complete function - password forgot reset
@@ -642,6 +642,4 @@ def edit_file(request):  # TODO: complete function
     return render(request, 'check_success.html')
 
 
-def test(request):
-    return render(request, 'user/login_page.html')
 

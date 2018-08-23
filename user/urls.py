@@ -64,6 +64,4 @@ urlpatterns = [
 
     # url(r'^sort_file/$', views.sort_file, name='sort_file'),
 
-    url(r'^test/$', views.test, name='test'),
-
 ]
