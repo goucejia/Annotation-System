@@ -641,3 +641,7 @@ def remove_share_record(request):
 def edit_file(request):  # TODO: complete function
     return render(request, 'check_success.html')
 
+
+def test(request):
+    return render(request, 'user/login_page.html')
+
